@@ -1,0 +1,23 @@
+[project]
+name = "training-model"
+version = "0.1.0"
+description = "Framework to train yolo models"
+authors = [
+    {name = "senrajudson",email = "judsonnascimento.filho@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "requests (>=2.32.5,<3.0.0)",
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "pydantic (>=2.12.5,<3.0.0)",
+    "fastapi (>=0.127.0,<0.128.0)",
+    "pandas (>=2.3.3,<3.0.0)",
+    "email-validator (>=2.3.0,<3.0.0)",
+    "cvat-sdk (>=2.54.0,<3.0.0)",
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
