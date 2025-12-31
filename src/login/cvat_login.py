@@ -1,5 +1,5 @@
 # cvat_login.py
-from src.utils.auth import User
+from src.login.auth import User
 
 import requests
 

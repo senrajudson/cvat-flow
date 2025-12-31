@@ -7,7 +7,7 @@ from typing import Iterable, List
 
 from pydantic import BaseModel, Field, ConfigDict
 
-from src.utils.cvat_client import CvatClient
+from src.client.cvat_client import CvatClient
 
 
 class UploadImagesConfig(BaseModel):

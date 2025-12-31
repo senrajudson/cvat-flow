@@ -4,7 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import requests
 
-from src.utils.auth import User
+from src.login.auth import User
 
 
 @dataclass
