@@ -15,10 +15,6 @@ class CvatAuth:
     def login_token(self, user: User, token_name: str = "training-model") -> str:
         """
         Fluxo robusto (CVAT 2.54.x):
-        1) POST /api/auth/login (não costuma retornar token)
-        2) GET /api/auth/login -> csrftoken
-        3) POST /api/auth/login com X-CSRFToken
-        4) POST /api/auth/access_tokens -> retorna token (key/token)
         """
         base = self.base_url.rstrip("/")
         s = requests.Session()
@@ -30,6 +26,7 @@ class CvatAuth:
             headers={"Accept": "application/vnd.cvat+json"},
             timeout=self.timeout,
         )
+
         if r.status_code >= 400:
             raise RuntimeError(f"Login falhou ({r.status_code}): {r.text}")
 

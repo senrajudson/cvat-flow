@@ -1,4 +1,4 @@
-# src/api.py
+# src/main.py
 from __future__ import annotations
 
 import os
@@ -25,7 +25,7 @@ ORG_SLUG = os.getenv("CVAT_ORG") or "meioambiente"
 
 USER = User(
     username=os.getenv("CVAT_USER"),
-    password=os.getenv("CVAT_PASS") or "",
+    password=os.getenv("CVAT_PASS"),
     email=os.getenv("CVAT_EMAIL"),
 )
 
@@ -63,6 +63,12 @@ class JobStatusResponse(BaseModel):
 def _get_client(user: User) -> CvatClient:
     if not BASE_URL:
         raise RuntimeError("CVAT_URL não configurado")
+    
+    # ✅ validações úteis
+    if not (user.username or user.email):
+        raise RuntimeError("Defina CVAT_USER ou CVAT_EMAIL no .env")
+    if not user.password:
+        raise RuntimeError(f"Defina CVAT_PASS no .env (está vazio) {user.password} {user.username} {user.email}")
 
     auth = CvatAuth(base_url=BASE_URL)
     token = auth.login_token(user, token_name="uploader-api")
@@ -92,7 +98,7 @@ def _run_upload_job(job_id: str, req: UploadRequest, user: User) -> None:
             with JOBS_LOCK:
                 JOBS[job_id] = {"status": "error", "detail": f"Não é uma pasta: {dataset_path_resolved}"}
             return
-
+        
         client = _get_client(USER) # <----- MUDAR ISSO PARA 'user' NO FUTURO
 
         config = UploadImagesConfig(
@@ -135,7 +141,7 @@ def upload(req: UploadRequest, background: BackgroundTasks) -> UploadResponse:
 
         JOBS[job_id] = {"status": "queued"}
 
-    background.add_task(_run_upload_job, job_id, req)
+    background.add_task(_run_upload_job, job_id, req, USER)
 
     return UploadResponse(job_id=job_id, status="queued", status_url=status_url)
 
@@ -161,4 +167,4 @@ if __name__ == "__main__":
 
     host = os.getenv("API_HOST", "0.0.0.0")
     port = int(os.getenv("API_PORT", "8010"))
-    uvicorn.run("src.api:app", host=host, port=port, reload=True)
+    uvicorn.run("src.main:app", host=host, port=port, reload=True)
